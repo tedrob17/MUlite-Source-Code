@@ -1,0 +1,39 @@
+local config = require(workspace.MUlite["MUlite AntiCap"].Config)
+
+local MinPercentage = config.minPercentage
+local MinRole = config.minRank
+local GroupId = config.groupID
+
+
+local Characters = 0
+local UppercaseCharacters = 0
+local Percentage =0
+local WarnFunction = game:GetService("ReplicatedStorage").WarningSystem:WaitForChild("Warn")
+
+local function Punish(player)
+	local Punishment = WarnFunction:InvokeClient(player)
+	Characters  = 0
+	Percentage = 0
+	UppercaseCharacters = 0
+end
+
+local function CheckWord(String, player)
+	for _, v in ipairs(String:split("")) do
+		Characters += 1
+		if v ~= v:lower() then 
+			UppercaseCharacters += 1
+		end
+	end
+	local Percentage = math.floor((UppercaseCharacters)/(Characters) * 100)
+	if Percentage >= MinPercentage then
+		Punish(player)
+	end
+end
+
+game.Players.PlayerAdded:Connect(function(player)
+	player.Chatted:Connect(function(text)
+		if player:GetRankInGroup(GroupId) <= MinRole then
+			CheckWord(text, player)
+		end
+	end)
+end)
