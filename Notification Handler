@@ -1,0 +1,22 @@
+local WarnFunction = game:GetService("ReplicatedStorage").WarningSystem:WaitForChild("Warn")
+local WarningCount = 0
+local MaxWarnings = 3
+local StarterGui = game:GetService("StarterGui")
+
+local function Notification(Desc)
+	StarterGui:SetCore("SendNotification", {
+		Title = "MUlite | AntiCap",
+		Text = Desc
+	})
+end
+
+local function Warn()
+	WarningCount = WarningCount +1
+	if WarningCount >= MaxWarnings then
+		game.Players.LocalPlayer:Kick("MUlite | You have reached max warnings.")
+	else
+		Notification("You have "..MaxWarnings - WarningCount.." warnings left, please do not continue to abuse caps.")
+	end
+end
+
+WarnFunction.OnClientInvoke = Warn
